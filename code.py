@@ -17,9 +17,9 @@ import matplotlib.pyplot as plt
 
 def label_encode_categorical_columns(df):
     le = LabelEncoder()
-    for column in df.columns:
-        if pd.api.types.is_object_dtype(df[column]) or pd.api.types.is_categorical_dtype(df[column]):
-            df[column] = le.fit_transform(df[column])
+    categorical_columns = df.select_dtypes(include=['object']).columns
+    for column in categorical_columns:
+        df[column] = le.fit_transform(df[column])
     return df
 
 def impute_missing_values(df):
