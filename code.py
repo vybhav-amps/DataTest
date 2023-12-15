@@ -17,9 +17,9 @@ import matplotlib.pyplot as plt
 
 def label_encode_categorical_columns(df):
     le = LabelEncoder()
-    categorical_columns = df.select_dtypes(include=['object']).columns
-    for column in categorical_columns:
-        df[column] = le.fit_transform(df[column])
+    for column in df.columns:
+        if pd.api.types.is_object_dtype(df[column]) or pd.api.types.is_categorical_dtype(df[column]):
+            df[column] = le.fit_transform(df[column])
     return df
 
 def impute_missing_values(df):
@@ -119,21 +119,38 @@ def train_and_evaluate_model(model, X_train, X_test, y_train, y_test):
 
 def perform_eda(data, x_columns, y_column):
     st.write(f"### Exploratory Data Analysis (EDA)")
-    fig, axes = plt.subplots(nrows=len(x_columns), ncols=2, figsize=(12, 6 * len(x_columns)))
 
-    for i, x_col in enumerate(x_columns):
-        sns.scatterplot(x=x_col, y=y_column, data=data, ax=axes[i, 0])
-        axes[i, 0].set_xlabel(x_col)
-        axes[i, 0].set_ylabel(y_column)
-        axes[i, 0].set_title(f"Scatter Plot: {x_col} vs {y_column}")
+    if len(x_columns) == 1:
+        fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
+        x_col = x_columns[0]
 
-        sns.barplot(x=x_col, y=y_column, data=data, ax=axes[i, 1])
-        axes[i, 1].set_xlabel(x_col)
-        axes[i, 1].set_ylabel(y_column)
-        axes[i, 1].set_title(f"Bar Graph: {x_col} vs {y_column}")
+        sns.scatterplot(x=x_col, y=y_column, data=data, ax=axes[0])
+        axes[0].set_xlabel(x_col)
+        axes[0].set_ylabel(y_column)
+        axes[0].set_title(f"Scatter Plot: {x_col} vs {y_column}")
+
+        sns.barplot(x=x_col, y=y_column, data=data, ax=axes[1])
+        axes[1].set_xlabel(x_col)
+        axes[1].set_ylabel(y_column)
+        axes[1].set_title(f"Bar Graph: {x_col} vs {y_column}")
+
+    elif len(x_columns) > 1:
+        fig, axes = plt.subplots(nrows=len(x_columns), ncols=2, figsize=(12, 6 * len(x_columns)))
+
+        for i, x_col in enumerate(x_columns):
+            sns.scatterplot(x=x_col, y=y_column, data=data, ax=axes[i, 0])
+            axes[i, 0].set_xlabel(x_col)
+            axes[i, 0].set_ylabel(y_column)
+            axes[i, 0].set_title(f"Scatter Plot: {x_col} vs {y_column}")
+
+            sns.barplot(x=x_col, y=y_column, data=data, ax=axes[i, 1])
+            axes[i, 1].set_xlabel(x_col)
+            axes[i, 1].set_ylabel(y_column)
+            axes[i, 1].set_title(f"Bar Graph: {x_col} vs {y_column}")
 
     plt.tight_layout()
     st.pyplot(fig)
+
 
 uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
 
