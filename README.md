@@ -2,6 +2,8 @@
 
 ## Link of the application: https://datatest.streamlit.app/
 
+<img width="812" alt="thumbnail" src="https://github.com/vybhav-amps/DataTest/assets/59567512/02c85ef9-f629-414d-83f6-4cbd75345a36">
+
 ## Overview
 DataTest is a user-friendly application designed for non-technical professionals in the data science and machine learning domain. It simplifies the data testing process, ensuring high-quality data for analysis and decision-making.
 
